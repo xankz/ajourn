@@ -21,7 +21,7 @@
                     <div class="text-h5" :style="{ lineHeight: '1.25em' }">{{ entry.title }}</div>
                 </q-item-section>
             </q-item>
-            <q-separator></q-separator>
+            <q-separator :class="{ 'q-mt-md': categories.length }"></q-separator>
             <q-card-section class="q-pt-sm q-px-none q-pb-none">
                 <!-- <q-btn
                     size="10px"

@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/ajourn/precache-manifest.ce412ea1b1ad0554fb278137a07a6e9c.js"
+  "/ajourn/precache-manifest.7eb6d8017a5e58516bd3eba4d0002de1.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "ajourn"});
