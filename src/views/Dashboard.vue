@@ -9,10 +9,10 @@ import PouchDB from "pouchdb";
 import { Loading, useQuasar } from "quasar";
 import { QSpinnerGrid } from "quasar";
 import { computed, defineComponent, onMounted, onUnmounted } from "vue";
-import { onBeforeRouteUpdate } from "vue-router";
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from "vue-router";
 
 import { useStore } from "@/store";
-import { UI_VISIBILITY } from "@/store/types";
+import { API_CLOSE_JOURNAL, UI_VISIBILITY } from "@/store/types";
 
 export default defineComponent({
     name: "Dashboard",
@@ -28,6 +28,10 @@ export default defineComponent({
         // Hide UI on leave
         onUnmounted(() => {
             $store.commit(UI_VISIBILITY, false);
+        });
+
+        onBeforeRouteLeave(async () => {
+            await $store.dispatch(API_CLOSE_JOURNAL);
         });
 
         return {

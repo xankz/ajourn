@@ -20,7 +20,7 @@
                     </div>
                 </q-card-section>
                 <q-card-actions align="right" class="text-primary">
-                    <q-btn flat label="Cancel" type="button"></q-btn>
+                    <q-btn flat label="Cancel" type="button" @click="onCancelClick"></q-btn>
                     <q-btn
                         flat
                         label="Create"
@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { useDialogPluginComponent, useQuasar } from "quasar";
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 
 import { useStore } from "@/store";

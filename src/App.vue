@@ -26,7 +26,7 @@
 <script lang="ts">
 import Cookies from "js-cookie";
 import { useQuasar } from "quasar";
-import { computed, defineComponent, onMounted } from "vue";
+import { computed, defineComponent, onMounted, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 
 import JournalDrawer from "@/components/JournalDrawer.vue";
