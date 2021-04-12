@@ -8,6 +8,6 @@ module.exports = {
     configureWebpack: {
         devtool: "source-map",
     },
-    publicPath: "/ajourn/#/",
+    publicPath: "/ajourn",
     transpileDependencies: ["quasar"],
 };
