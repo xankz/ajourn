@@ -3,10 +3,10 @@
 import Cookies from "js-cookie";
 import * as mime from "mime-types";
 import shortid from "short-uuid";
-import { InjectionKey, unref } from "vue";
-import { createLogger, createStore, Plugin, Store, useStore as baseUseStore } from "vuex";
+import { InjectionKey } from "vue";
+import { createLogger, createStore, Store, useStore as baseUseStore } from "vuex";
 
-import { openLocal, PouchDB, useDB } from "@/db";
+import { PouchDB, useDB } from "@/db";
 import { b64 } from "@/utils";
 
 import {
@@ -37,7 +37,9 @@ import {
     SET_JOURNAL,
     SET_JOURNALS,
     SET_LAST_ENTRY,
+    SET_USER_PREFS,
     UI_VISIBILITY,
+    UserPrefs,
 } from "./types";
 
 export interface State {
@@ -49,6 +51,7 @@ export interface State {
     journals: { [key: string]: JournalIndex };
     lastEntry: string;
     showUi: boolean;
+    userPrefs: UserPrefs;
 }
 
 export const key: InjectionKey<Store<State>> = Symbol();
@@ -68,8 +71,17 @@ export const store = createStore<State>({
         entries: {},
         lastEntry: "",
         journals: {},
+        userPrefs: {
+            darkMode: false,
+            lastEntry: "",
+        },
     },
     mutations: {
+        [SET_USER_PREFS](state, payload: Partial<UserPrefs>) {
+            const prefs = Object.assign({}, state.userPrefs, payload);
+            state.userPrefs = prefs;
+            Cookies.set("userPrefs", prefs);
+        },
         [SET_LAST_ENTRY](state, payload: string) {
             state.lastEntry = payload;
         },

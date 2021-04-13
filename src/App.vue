@@ -2,7 +2,7 @@
     <q-layout view="hHh lpR fFf">
         <q-header elevated class="bg-primary text-white" v-if="currentJournal">
             <q-toolbar>
-                <q-btn icon="home" flat round @click="exitJournal"> </q-btn>
+                <q-btn icon="home" flat round @click="exitJournal"></q-btn>
                 <q-toolbar-title>
                     {{ currentJournal.title }}
                 </q-toolbar-title>
@@ -32,12 +32,7 @@ import { useRouter } from "vue-router";
 import JournalDrawer from "@/components/JournalDrawer.vue";
 
 import { useStore } from "./store";
-import {
-    API_CLOSE_JOURNAL,
-    API_FETCH_JOURNALS,
-    SET_LAST_ENTRY,
-    UI_VISIBILITY,
-} from "./store/types";
+import { API_CLOSE_JOURNAL, SET_USER_PREFS, UI_VISIBILITY, UserPrefs } from "./store/types";
 
 export default defineComponent({
     name: "LayoutDefault",
@@ -50,10 +45,9 @@ export default defineComponent({
         const $router = useRouter();
 
         onMounted(async () => {
-            // await $store.dispatch(API_FETCH_JOURNALS);
-            const lastEntry = Cookies.get("lastEntry");
-            if (lastEntry && $store.state.entries[lastEntry]) {
-                $store.commit(SET_LAST_ENTRY, lastEntry);
+            const savedPrefs = Cookies.get("userPrefs");
+            if (savedPrefs) {
+                $store.commit(SET_USER_PREFS, JSON.parse(savedPrefs));
             }
         });
 
@@ -62,6 +56,10 @@ export default defineComponent({
             await $store.dispatch(API_CLOSE_JOURNAL);
             await $router.push("/");
         };
+
+        watchEffect(() => {
+            $q.dark.set($store.state.userPrefs.darkMode);
+        });
 
         return {
             currentJournalID: computed(() => $store.state.currentJournal),
@@ -73,7 +71,11 @@ export default defineComponent({
             toggleUi: () => {
                 $store.commit(UI_VISIBILITY, !$store.state.showUi);
             },
-            toggleDarkMode: $q.dark.toggle,
+            toggleDarkMode: () => {
+                $store.commit(SET_USER_PREFS, {
+                    darkMode: !$store.state.userPrefs.darkMode,
+                } as Partial<UserPrefs>);
+            },
         };
     },
 });

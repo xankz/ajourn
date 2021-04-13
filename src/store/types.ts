@@ -21,6 +21,7 @@ export const UI_VISIBILITY = "UI_VISIBILITY";
 export const SET_CURRENT_JOURNAL = "SET_CURRENT_JOURNAL";
 export const SET_DB = "SET_DB";
 export const SET_LAST_ENTRY = "SET_LAST_ENTRY";
+export const SET_USER_PREFS = "SET_USER_PREFS";
 
 export const indexDocumentKey = "0";
 
@@ -35,6 +36,11 @@ export enum FieldType {
     Reference = 7,
     Embed = 8,
 }
+
+export type UserPrefs = {
+    darkMode: boolean;
+    lastEntry: string;
+};
 
 export type Journal = {
     id: string;
