@@ -16,17 +16,19 @@
     <div v-else>
         <div class="text-subtitle2 q-mb-xs">{{ modelValue.name }}</div>
         <div
+            v-if="modelValue.content"
             class="text-body2 text-justify"
             v-html="modelValue.content"
             style="word-wrap: break-word"
         ></div>
+        <div class="text-subtitle2 text-grey" v-else>No content for this field.</div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType } from "vue";
+import { defineComponent, PropType } from "vue";
 
-import { DescriptionField, Entry, Field, FieldType, TextField } from "@/store/types";
+import { DescriptionField, Entry, Field, FieldType } from "@/store/types";
 
 export default defineComponent({
     name: "DescriptionField",

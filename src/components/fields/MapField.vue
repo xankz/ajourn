@@ -54,17 +54,17 @@
             v-if="mapBackground"
         ></map-view>
         <div class="text-subtitle2 q-mb-xs text-negative" v-else>
-            Error loading field! Could not retrieve background.
+            Set a background to load this map.
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { useQuasar } from "quasar";
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 
 import { useStore } from "@/store";
-import { Entry, FieldType, MapField, MapFieldLocation, NumberField } from "@/store/types";
+import { Entry, FieldType, MapField, MapFieldLocation } from "@/store/types";
 import { getAttachmentIcon } from "@/utils";
 
 import EditMapDialog from "../maps/EditMapDialog.vue";

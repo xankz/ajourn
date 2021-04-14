@@ -34,8 +34,8 @@
             v-else-if="embedServiceC == EmbedFieldService.Soundcloud"
             :src="
                 'https://soundcloud.com/oembed?format=js&url=' +
-                encodeURIComponent(modelValue.url) +
-                '&iframe=true'
+                    encodeURIComponent(modelValue.url) +
+                    '&iframe=true'
             "
         ></iframe>
         <q-card
@@ -53,6 +53,9 @@
                 </q-item-section>
             </q-item>
         </q-card>
+        <div class="text-subtitle2 text-grey" v-else-if="!modelValue.url">
+            No URL for this field.
+        </div>
         <div v-else class="text-negative text-subtitle2">Error parsing URL!</div>
     </div>
 </template>
@@ -63,8 +66,6 @@ import { computed, defineComponent, PropType, ref, watchEffect } from "vue";
 
 import { EmbedField, EmbedFieldService, Entry, FieldType } from "@/store/types";
 import { getEmbedService } from "@/utils";
-
-import AddExternalDialog from "../AddExternalDialog.vue";
 
 export default defineComponent({
     name: "EmbedField",

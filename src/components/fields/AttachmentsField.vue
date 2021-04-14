@@ -33,6 +33,7 @@
         <div
             class="shadow-1 rounded-borders row q-gutter-sm q-mb-md"
             style="margin-left: 0; margin-top: 0; padding-bottom: 8px"
+            v-if="linkedAttachments.length"
         >
             <attachments-field-icon
                 v-for="att in linkedAttachments"
@@ -42,6 +43,7 @@
                 @click="previewAttachment(att)"
             ></attachments-field-icon>
         </div>
+        <div class="text-subtitle2 text-grey" v-else>No attachments for this field.</div>
     </div>
 </template>
 

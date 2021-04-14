@@ -10,7 +10,8 @@
     </div>
     <div v-else>
         <div class="text-subtitle2 q-mb-xs">{{ modelValue.name }}</div>
-        <div class="text-body2">{{ modelValue.content }}</div>
+        <div class="text-body2" v-if="modelValue.content">{{ modelValue.content }}</div>
+        <div class="text-subtitle2 text-grey" v-else>No content for this field.</div>
     </div>
 </template>
 

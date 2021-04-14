@@ -19,7 +19,7 @@
         >
             <template v-slot:no-option>
                 <q-item dense>
-                    <q-item-section class="text-italic text-grey"> No categories </q-item-section>
+                    <q-item-section class="text-italic text-grey"> No categories</q-item-section>
                 </q-item>
             </template>
         </q-select>
@@ -36,15 +36,16 @@
     </div>
     <div v-else>
         <div class="text-subtitle2 q-mb-xs">{{ modelValue.name }}</div>
-        <q-list bordered separator class="rounded-borders">
+        <q-list bordered separator class="rounded-borders" v-if="entryReferences.length">
             <entry-link v-for="e in entryReferences" :entryId="e" :key="e" item></entry-link>
         </q-list>
+        <div class="text-subtitle2 text-grey" v-else>No references for this field.</div>
     </div>
 </template>
 
 <script lang="ts">
 import { intersection } from "lodash";
-import { computed, defineComponent, PropType, watch, watchEffect } from "vue";
+import { computed, defineComponent, PropType, watchEffect } from "vue";
 
 import { useStore } from "@/store";
 import {
@@ -53,7 +54,6 @@ import {
     Entry,
     FieldType,
     ReferenceField,
-    TextField,
 } from "@/store/types";
 
 import EntryLink from "../EntryLink.vue";
