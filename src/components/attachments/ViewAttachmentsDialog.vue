@@ -158,7 +158,7 @@
             <q-card-actions align="left">
                 <div class="text-body q-pl-md text-grey">
                     {{ filteredAttachmentsLen }} attachment{{
-                        filteredAttachmentsLen == 1 ? "" : "s"
+                        filteredAttachmentsLen === 1 ? "" : "s"
                     }}
                 </div>
                 <q-space></q-space>
@@ -174,7 +174,7 @@ import { isEmpty, truncate } from "lodash";
 // @ts-ignore
 import * as mime from "mime-types";
 import { format, useDialogPluginComponent, useQuasar } from "quasar";
-import { computed, defineComponent, onMounted, PropType, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 
 import { useStore } from "@/store";
 import {
@@ -236,7 +236,7 @@ export default defineComponent({
             $q.dialog({
                 component: CreateAttachmentDialog,
                 componentProps: {
-                    attachments: entry.value.attachments,
+                    attachments: filteredAttachments,
                 },
             }).onOk(async (attachment: CreateAttachment) => {
                 if (!attachment) {

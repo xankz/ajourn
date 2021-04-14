@@ -8,7 +8,7 @@
                     <span v-if="selected.length">({{ selected.length }})</span>
                 </div>
                 <q-space></q-space>
-                <q-btn icon="add" color="primary" flat round dense>
+                <q-btn icon="add" color="primary" flat round dense @click="createAttachment">
                     <q-tooltip>Create a new attachment</q-tooltip>
                 </q-btn>
             </q-card-section>
@@ -16,10 +16,10 @@
                 <q-item
                     clickable
                     v-ripple
-                    v-for="(att, attName) in entry.attachments"
+                    v-for="(att, attName) in filteredAttachments"
                     :key="attName"
                     @click="setSelected(attName)"
-                    :active="selected == attName"
+                    :active="selected === attName"
                 >
                     <q-item-section avatar class="q-pr-none" style="min-width: 0; width: 28px">
                         <q-icon :name="getAttachmentIcon(att.content_type)" size="20px"></q-icon>
@@ -37,7 +37,7 @@
             <q-card-actions align="right">
                 <div class="text-body q-pl-md text-grey">
                     {{ filteredAttachmentsLen }} attachment{{
-                        filteredAttachmentsLen == 1 ? "" : "s"
+                        filteredAttachmentsLen === 1 ? "" : "s"
                     }}
                 </div>
                 <q-space></q-space>
@@ -58,16 +58,18 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import * as mime from "mime-types";
-import { useDialogPluginComponent } from "quasar";
-import { computed, defineComponent, PropType, ref } from "vue";
+import { useDialogPluginComponent, useQuasar } from "quasar";
+import { computed, defineComponent, ref } from "vue";
 
-import { Entry } from "@/store/types";
+import CreateAttachmentDialog from "@/components/attachments/CreateAttachmentDialog.vue";
+import { useStore } from "@/store";
+import { API_ADD_ENTRY_ATTACHMENT, CreateAttachment } from "@/store/types";
 import { getAttachmentIcon } from "@/utils";
 
 export default defineComponent({
     props: {
-        entry: {
-            type: Object as PropType<Entry>,
+        entryId: {
+            type: String,
             required: true,
         },
         multiple: {
@@ -79,13 +81,20 @@ export default defineComponent({
     emits: [...useDialogPluginComponent.emits],
 
     setup(props) {
+        // Providers
         const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
+        const $q = useQuasar();
+        const $store = useStore();
 
         // Refs
         const selected = ref<string[]>([]);
 
         // Computed
-        const filteredAttachments = computed(() => props.entry.attachments);
+        const filteredAttachments = computed(() =>
+            $store.state.entries[props.entryId]
+                ? $store.state.entries[props.entryId].attachments
+                : []
+        );
         const filteredAttachmentsLen = computed(
             () => Object.keys(filteredAttachments.value).length
         );
@@ -96,11 +105,34 @@ export default defineComponent({
                 selected.value = selected.value.filter((s) => s !== key);
             } else {
                 if (props.multiple) {
-                    selected.value.push(key);
+                    selected.value = [...selected.value, key];
                 } else {
                     selected.value = [key];
                 }
             }
+        };
+
+        const createAttachment = () => {
+            $q.dialog({
+                component: CreateAttachmentDialog,
+                componentProps: {
+                    attachments: filteredAttachments,
+                },
+            }).onOk(async (attachment: CreateAttachment) => {
+                if (!attachment) {
+                    return;
+                }
+                try {
+                    await $store.dispatch(API_ADD_ENTRY_ATTACHMENT, {
+                        id: props.entryId,
+                        attachment,
+                    });
+                    setSelected(attachment.name);
+                    $q.notify({ message: "Attachment saved", type: "positive" });
+                } catch (e) {
+                    $q.notify({ message: e.message, type: "negative" });
+                }
+            });
         };
 
         return {
@@ -113,6 +145,7 @@ export default defineComponent({
             filteredAttachments,
             filteredAttachmentsLen,
             setSelected,
+            createAttachment,
 
             onOKClick() {
                 if (selected.value) {

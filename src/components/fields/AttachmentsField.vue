@@ -13,6 +13,7 @@
             ></q-btn>
         </div>
         <q-list bordered separator class="q-mt-sm" dense>
+            {{ liveAttachments.length }}
             <q-item v-for="att in linkedAttachments" :key="att.name">
                 <q-item-section avatar class="q-pr-none" style="min-width: 36px">
                     <q-icon :name="getAttachmentIcon(att.content_type)" color="grey-8"></q-icon>
@@ -46,19 +47,12 @@
 
 <script lang="ts">
 import { useQuasar } from "quasar";
-import { computed, defineComponent, onMounted, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, ref } from "vue";
 
 import SelectAttachmentsDialog from "@/components/attachments/SelectAttachmentsDialog.vue";
 import { useStore } from "@/store";
-import {
-    AttachmentsField,
-    DescriptionField,
-    Entry,
-    Field,
-    FieldType,
-    TextField,
-} from "@/store/types";
-import { b64, getAttachmentIcon, renderText } from "@/utils";
+import { AttachmentsField, Entry } from "@/store/types";
+import { getAttachmentIcon, renderText } from "@/utils";
 
 import PreviewAttachmentDialog from "../attachments/PreviewAttachmentDialog.vue";
 import AttachmentsFieldIcon from "./AttachmentsFieldIcon.vue";
@@ -90,8 +84,13 @@ export default defineComponent({
         const currentSlide = ref("");
 
         // Computed
+        const liveAttachments = computed(() =>
+            $store.state.entries[props.entry.id]
+                ? $store.state.entries[props.entry.id].attachments
+                : []
+        );
         const linkedAttachments = computed(() =>
-            Object.entries(props.entry.attachments)
+            Object.entries(liveAttachments.value)
                 .filter((kv) => props.modelValue.attachments.includes(kv[0]))
                 .map((kv) => {
                     return {
@@ -103,7 +102,10 @@ export default defineComponent({
 
         // Functions
         const updateAttachments = (attachments: string[]) => {
-            emit("update:modelValue", { ...props.modelValue, attachments } as AttachmentsField);
+            emit("update:modelValue", {
+                ...props.modelValue,
+                attachments,
+            } as AttachmentsField);
         };
 
         const removeAttachment = (key: string) => {
@@ -120,10 +122,10 @@ export default defineComponent({
             $q.dialog({
                 component: SelectAttachmentsDialog,
                 componentProps: {
-                    entry: props.entry,
+                    entryId: props.entry.id,
                 },
             }).onOk((name: string) => {
-                if (props.modelValue.attachments.includes(name)) return;
+                if (!(name in liveAttachments.value)) return;
                 updateAttachments([...props.modelValue.attachments, name]);
             });
         };
@@ -143,6 +145,7 @@ export default defineComponent({
             getAttachmentIcon,
             removeAttachment,
             currentSlide,
+            liveAttachments,
             entryAttachment: $store.getters.entryAttachment,
             renderText,
             previewAttachment,
