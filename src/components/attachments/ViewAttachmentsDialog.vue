@@ -104,6 +104,7 @@
                                                 <td class="text-left text-grey">Name</td>
                                                 <td class="text-right">
                                                     {{ truncate(selectedAttKey, { length: 16 }) }}
+                                                    <q-tooltip>{{ selectedAttKey }}</q-tooltip>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -181,7 +182,9 @@ import {
     API_ADD_ENTRY_ATTACHMENT,
     API_DELETE_ENTRY_ATTACHMENT,
     API_FETCH_ENTRY,
+    API_UPDATE_ENTRY,
     CreateAttachment,
+    FieldType,
 } from "@/store/types";
 import { b64, getAttachmentIcon, renderText } from "@/utils";
 
@@ -271,16 +274,50 @@ export default defineComponent({
                     return;
                 }
                 try {
+                    const oldAttName = selectedAttKey.value;
                     await $store.dispatch(API_DELETE_ENTRY_ATTACHMENT, {
                         id: props.entryId,
-                        name: selectedAttKey.value,
+                        name: oldAttName,
                     });
                     await $store.dispatch(API_ADD_ENTRY_ATTACHMENT, {
                         id: props.entryId,
                         attachment,
                     });
                     setSelected(attachment.name);
-                    $q.notify({ message: "Attachment saved", type: "positive" });
+                    $q.notify({ message: "Attachment updated", type: "positive" });
+                    // Attempt to auto-fix references in fields
+                    if (entry.value) {
+                        const fields = entry.value.fields.map((f) => {
+                            // TODO: Where/why does f.type get saved as string?
+                            if (typeof f.type == "string") {
+                                f.type = Number.parseInt(f.type);
+                            }
+                            switch (f.type) {
+                                case FieldType.Attachments:
+                                    f.attachments = f.attachments.map((a) => {
+                                        return a == oldAttName ? attachment.name : a;
+                                    });
+                                    break;
+                                case FieldType.Map:
+                                    f.imageKey =
+                                        f.imageKey == oldAttName ? attachment.name : f.imageKey;
+                                    break;
+                            }
+                            return f;
+                        });
+
+                        // Update avatar attachment reference as well
+                        if (
+                            entry.value.avatar.type == "attachment" &&
+                            entry.value.avatar.data == oldAttName
+                        ) {
+                            entry.value.avatar.data = attachment.name;
+                        }
+                        await $store.dispatch(API_UPDATE_ENTRY, {
+                            id: props.entryId,
+                            data: { ...entry.value, fields },
+                        });
+                    }
                 } catch (e) {
                     $q.notify({ message: e.message, type: "negative" });
                 }

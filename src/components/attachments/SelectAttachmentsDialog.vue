@@ -19,12 +19,12 @@
                     v-for="(att, attName) in filteredAttachments"
                     :key="attName"
                     @click="setSelected(attName)"
-                    :active="selected === attName"
+                    :active="selected.includes(attName)"
                 >
                     <q-item-section avatar class="q-pr-none" style="min-width: 0; width: 28px">
                         <q-icon :name="getAttachmentIcon(att.content_type)" size="20px"></q-icon>
                     </q-item-section>
-                    <q-item-section>
+                    <q-item-section class="ellipsis">
                         {{ attName }}
                     </q-item-section>
                     <q-item-section side>

@@ -1,9 +1,11 @@
 <template>
-    <q-dialog ref="dialogRef" @hide="onDialogHide">
+    <q-dialog ref="dialogRef" @hide="onDialogHide" :persistent="!!uploadData">
         <q-card class="q-dialog-plugin">
             <q-card-section class="row align-items-center q-pb-sm">
-                <div class="text-h6" v-if="replace">Replace attachment "{{ replace }}"</div>
-                <div class="text-h6" v-else>Create attachment</div>
+                <div class="text-h6 ellipsis" v-if="replace">
+                    Replace attachment "{{ replace }}"
+                </div>
+                <div class="text-h6 ellipsis" v-else>Create attachment</div>
             </q-card-section>
             <q-tabs v-model="currentTab" dense class="text-primary">
                 <q-tab name="upload" label="Upload"></q-tab>
@@ -43,6 +45,9 @@
                 dense
                 :rules="[
                     (v) => /^\w+$/.test(v) || 'Please use only letters, numbers, and underscores',
+                    (v) =>
+                        v.length <= AttachmentNameLength ||
+                        'Name will be capped to ' + AttachmentNameLength + ' characters',
                 ]"
             ></q-input>
 
@@ -64,7 +69,8 @@
 import { format, useDialogPluginComponent, useQuasar } from "quasar";
 import { computed, defineComponent, PropType, ref } from "vue";
 
-import { CreateAttachment, Entry } from "@/store/types";
+import { AttachmentNameLength } from "@/constants";
+import { CreateAttachment } from "@/store/types";
 
 export default defineComponent({
     name: "CreateAttachmentsDialog",
@@ -102,6 +108,9 @@ export default defineComponent({
 
         // Functions
         const submit = () => {
+            if (attachmentName.value.length >= AttachmentNameLength) {
+                attachmentName.value = attachmentName.value.slice(0, AttachmentNameLength);
+            }
             try {
                 switch (currentTab.value) {
                     case "upload":
@@ -169,6 +178,7 @@ export default defineComponent({
             rawDataSize,
             uploadDataSize,
             attachmentName,
+            AttachmentNameLength,
 
             onOKClick() {
                 presubmit();

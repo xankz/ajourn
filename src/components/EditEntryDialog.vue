@@ -281,7 +281,6 @@ export default defineComponent({
         const $router = useRouter();
 
         const entryModel = reactive({ ...props.entry });
-        console.log(entryModel);
         const currentFieldName = ref<QInput | null>(null);
 
         const entryAvatar = computed(() =>

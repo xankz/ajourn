@@ -21,6 +21,8 @@ import {
     ToggleField,
 } from "./store/types";
 
+export const AttachmentNameLength = 64;
+
 export const DefaultTextField: Omit<TextField, "type" | "id"> = {
     name: "New Text",
     content: "",

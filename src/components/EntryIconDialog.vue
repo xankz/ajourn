@@ -91,11 +91,14 @@ export default defineComponent({
             this.$emit("attach", { type: "icon", data: icon });
         },
         selectAttachment() {
+            if (!this.entry) {
+                return;
+            }
             this.$q
                 .dialog({
                     component: SelectAttachmentsDialog,
                     componentProps: {
-                        entry: this.entry,
+                        entryId: this.entry.id,
                     },
                 })
                 .onOk((val: string) => {

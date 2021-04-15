@@ -1,5 +1,6 @@
 <template>
     <q-dialog ref="dialogRef" @hide="onDialogHide">
+        <!-- TODO: refactor so title only hides when content type is image -->
         <q-img
             v-if="attachment.content_type.startsWith('image')"
             :src="entryAttachment(entryId, attachment.name)"
@@ -9,7 +10,7 @@
             </div>
         </q-img>
         <q-card v-else-if="attachment.content_type.startsWith('text')">
-            <q-card-section class="text-h6 q-pb-none">
+            <q-card-section class="text-h6 q-pb-none ellipsis">
                 {{ attachment.name }}
             </q-card-section>
             <q-card-section>
@@ -17,13 +18,13 @@
             </q-card-section>
         </q-card>
         <q-card class="q-dialog-plugin" v-else-if="attachment.content_type.startsWith('audio')">
-            <q-card-section class="text-h6">
+            <q-card-section class="text-h6 ellipsis">
                 {{ attachment.name }}
             </q-card-section>
             <audio controls :src="entryAttachment(entryId, attachment.name)"></audio>
         </q-card>
         <q-card class="q-dialog-plugin" v-else-if="attachment.content_type.startsWith('video')">
-            <q-card-section class="text-h6">
+            <q-card-section class="text-h6 ellipsis">
                 {{ attachment.name }}
             </q-card-section>
             <video
@@ -34,7 +35,7 @@
             ></video>
         </q-card>
         <q-card class="q-dialog-plugin" v-else>
-            <q-card-section class="text-h6">
+            <q-card-section class="text-h6 ellipsis">
                 {{ attachment.name }}
                 <div class="text-subtitle2">{{ attachment.content_type }}</div>
             </q-card-section>

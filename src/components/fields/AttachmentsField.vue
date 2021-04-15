@@ -13,13 +13,13 @@
             ></q-btn>
         </div>
         <q-list bordered separator class="q-mt-sm" dense>
-            {{ liveAttachments.length }}
             <q-item v-for="att in linkedAttachments" :key="att.name">
                 <q-item-section avatar class="q-pr-none" style="min-width: 36px">
                     <q-icon :name="getAttachmentIcon(att.content_type)" color="grey-8"></q-icon>
                 </q-item-section>
-                <q-item-section class="text-weight-bold" style="line-height: 1.3em">
+                <q-item-section class="text-weight-bold ellipsis" style="line-height: 1.3em">
                     {{ att.name }}
+                    <q-tooltip>{{ att.name }}</q-tooltip>
                 </q-item-section>
                 <q-item-section side>
                     <q-btn flat dense round icon="close" @click="removeAttachment(att.name)">
@@ -104,6 +104,7 @@ export default defineComponent({
 
         // Functions
         const updateAttachments = (attachments: string[]) => {
+            attachments = attachments.filter((att) => att in liveAttachments.value);
             emit("update:modelValue", {
                 ...props.modelValue,
                 attachments,
@@ -128,6 +129,7 @@ export default defineComponent({
                 },
             }).onOk((name: string) => {
                 if (!(name in liveAttachments.value)) return;
+                if (props.modelValue.attachments.includes(name)) return;
                 updateAttachments([...props.modelValue.attachments, name]);
             });
         };
