@@ -17,7 +17,6 @@ export const SET_JOURNAL = "SET_JOURNAL";
 export const SET_JOURNALS = "SET_JOURNALS";
 export const SET_ENTRIES = "SET_ENTRIES";
 export const SET_ENTRY = "SET_ENTRY";
-export const UI_VISIBILITY = "UI_VISIBILITY";
 export const SET_CURRENT_JOURNAL = "SET_CURRENT_JOURNAL";
 export const SET_DB = "SET_DB";
 export const SET_LAST_ENTRY = "SET_LAST_ENTRY";

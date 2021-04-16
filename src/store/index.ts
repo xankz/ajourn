@@ -38,7 +38,6 @@ import {
     SET_JOURNALS,
     SET_LAST_ENTRY,
     SET_USER_PREFS,
-    UI_VISIBILITY,
     UserPrefs,
 } from "./types";
 
@@ -50,7 +49,6 @@ export interface State {
     entries: { [key: string]: Entry };
     journals: { [key: string]: JournalIndex };
     lastEntry: string;
-    showUi: boolean;
     userPrefs: UserPrefs;
 }
 
@@ -67,7 +65,6 @@ export const store = createStore<State>({
         fetchingJournals: false,
         fetchingEntries: false,
         currentJournal: undefined,
-        showUi: false,
         entries: {},
         lastEntry: "",
         journals: {},
@@ -89,9 +86,6 @@ export const store = createStore<State>({
         },
         [SET_JOURNAL](state, payload: { id: string; journal: JournalIndex }) {
             state.journals[payload.id] = payload.journal;
-        },
-        [UI_VISIBILITY](state, payload: boolean) {
-            state.showUi = payload;
         },
         [SET_CURRENT_JOURNAL](state, payload?: string) {
             state.currentJournal = payload;

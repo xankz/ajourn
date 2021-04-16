@@ -21,6 +21,11 @@ import {
     ToggleField,
 } from "./store/types";
 
+export const AppVersion = "1.0.4";
+
+export const ChangelogUrl =
+    "https://gist.githubusercontent.com/milkdazombie/6fe765d5be0349ef42ae44f5e07f0018/raw";
+
 export const AttachmentNameLength = 64;
 
 export const DefaultTextField: Omit<TextField, "type" | "id"> = {

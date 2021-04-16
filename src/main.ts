@@ -9,6 +9,7 @@ import { Quasar } from "quasar";
 import screenfull from "screenfull";
 import { createApp } from "vue";
 import vueDebounce from "vue-debounce";
+import VueMarkdownIt from "vue3-markdown-it";
 
 import App from "./App.vue";
 import { devtools } from "./devtools";
@@ -23,7 +24,6 @@ const app = createApp(App)
     .use(Quasar, quasarUserOptions)
     .use(store, key)
     .use(router)
+    .use(VueMarkdownIt as any)
     .use(vueDebounce, { listenTo: "input" })
     .mount("#app");
-
-app.$options.devt;

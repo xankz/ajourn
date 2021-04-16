@@ -36,6 +36,7 @@
     "vue-class-component": "^8.0.0-0",
     "vue-debounce": "^2.6.0",
     "vue-router": "^4.0.0-0",
+    "vue3-markdown-it": "^1.0.8",
     "vuedraggable": "^4.0.1",
     "vuex": "^4.0.0-0"
   },
