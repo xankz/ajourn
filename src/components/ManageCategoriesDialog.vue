@@ -34,7 +34,17 @@
                                         class="q-mb-sm"
                                         :rules="[(val) => !!val || 'Please input a valid name']"
                                         hide-bottom-space
-                                    ></q-input>
+                                    >
+                                        <template v-slot:after>
+                                            <q-btn
+                                                style="height: 100%"
+                                                icon="delete_outline"
+                                                outline
+                                                color="red"
+                                                @click="deleteCategory(idx)"
+                                            ></q-btn>
+                                        </template>
+                                    </q-input>
                                     <q-input
                                         outlined
                                         dense
@@ -57,6 +67,7 @@
                                         <q-input
                                             outlined
                                             dense
+                                            :disable="true"
                                             v-model="c.labelSingular"
                                             label="Singular label"
                                             stack-label
@@ -66,6 +77,7 @@
                                         <q-input
                                             outlined
                                             dense
+                                            :disable="true"
                                             v-model="c.labelPlural"
                                             label="Plural label"
                                             :placeholder="namePluralized"
@@ -97,10 +109,12 @@ import pluralize from "pluralize";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 import randomColor from "randomcolor";
 import shortid from "short-uuid";
-import { computed, defineComponent, ref, unref, watchEffect } from "vue";
+import { computed, defineComponent, ref, unref } from "vue";
 
 import { useStore } from "@/store";
 import { API_UPDATE_JOURNAL, Category } from "@/store/types";
+
+import DeleteCategoryDialog from "./DeleteCategoryDialog.vue";
 
 export default defineComponent({
     name: "ManageCategoriesDialog",
@@ -126,12 +140,25 @@ export default defineComponent({
 
         // Functions
         const addCategory = () => {
-            categories.value.push({
+            categories.value.unshift({
                 name: "Untitled category",
                 labelSingular: "",
                 labelPlural: "",
                 color: randomColor({ luminosity: "dark" }),
                 id: shortid.generate(),
+            });
+        };
+        const deleteCategory = (idx: number) => {
+            const c = categories.value[idx];
+            if (!c) return;
+
+            $q.dialog({
+                component: DeleteCategoryDialog,
+                componentProps: {
+                    category: c.name,
+                },
+            }).onOk(() => {
+                categories.value.splice(idx, 1);
             });
         };
 
@@ -151,6 +178,7 @@ export default defineComponent({
             categories,
             addCategory,
             pluralize,
+            deleteCategory,
             namePluralized,
             saveChanges,
 
