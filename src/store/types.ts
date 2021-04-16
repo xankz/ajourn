@@ -39,7 +39,6 @@ export enum FieldType {
 
 export type UserPrefs = {
     darkMode: boolean;
-    lastEntry: string;
 };
 
 export type Journal = {

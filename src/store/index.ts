@@ -73,7 +73,6 @@ export const store = createStore<State>({
         journals: {},
         userPrefs: {
             darkMode: false,
-            lastEntry: "",
         },
     },
     mutations: {
