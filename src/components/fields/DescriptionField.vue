@@ -17,7 +17,7 @@
         <div class="text-subtitle2 q-mb-xs">{{ modelValue.name }}</div>
         <div
             v-if="modelValue.content"
-            class="text-body2 text-justify"
+            class="text-body2"
             v-html="modelValue.content"
             style="word-wrap: break-word"
         ></div>
