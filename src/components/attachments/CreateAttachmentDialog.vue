@@ -17,7 +17,8 @@
                     <q-file
                         outlined
                         label="Upload a file..."
-                        v-model="uploadData"
+                        :modelValue="uploadData"
+                        @update:modelValue="updateUploadData($event)"
                         :hint="'Size: ' + uploadDataSize"
                         debounce="600"
                     >
@@ -69,6 +70,7 @@
 import { format, useDialogPluginComponent, useQuasar } from "quasar";
 import { computed, defineComponent, PropType, ref } from "vue";
 
+import CropAttachmentDialog from "@/components/attachments/CropAttachmentDialog.vue";
 import { AttachmentNameLength } from "@/constants";
 import { CreateAttachment } from "@/store/types";
 
@@ -89,7 +91,7 @@ export default defineComponent({
 
     emits: [...useDialogPluginComponent.emits],
 
-    setup(props) {
+    setup(props, { emit }) {
         // Providers
         const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
         const $q = useQuasar();
@@ -131,6 +133,22 @@ export default defineComponent({
                 }
             } catch (e) {
                 $q.notify({ type: "negative", message: e.message });
+            }
+        };
+        const updateUploadData = (f: File | undefined) => {
+            if (f && f.type.startsWith("image")) {
+                $q.dialog({
+                    component: CropAttachmentDialog,
+                    componentProps: {
+                        image: f,
+                        imageType: f.type,
+                    },
+                }).onOk((b: Blob) => {
+                    const f2 = new File([b], f.name, { type: f.type });
+                    uploadData.value = f2;
+                });
+            } else {
+                uploadData.value = f;
             }
         };
         const presubmit = () => {
@@ -179,6 +197,7 @@ export default defineComponent({
             uploadDataSize,
             attachmentName,
             AttachmentNameLength,
+            updateUploadData,
 
             onOKClick() {
                 presubmit();
