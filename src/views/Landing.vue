@@ -13,7 +13,7 @@
                 </div>
                 <div class="col row items-end justify-end">
                     <div>
-                        Made with ❤️ by
+                        Made with 🤮 by
                         <a
                             href="https://github.com/xankz"
                             target="_blank"
