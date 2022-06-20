@@ -13,13 +13,13 @@
                 </div>
                 <div class="col row items-end justify-end">
                     <div>
-                        Made with ☘️ by
+                        Made with ❤️ by
                         <a
-                            href="https://github.com/milkdazombie"
+                            href="https://github.com/xankz"
                             target="_blank"
                             class="text-weight-bold text-primary"
                             style="text-decoration: none"
-                            >@kinesivan</a
+                            >@xankz</a
                         >
                     </div>
                 </div>
